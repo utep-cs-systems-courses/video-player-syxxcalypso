@@ -22,7 +22,7 @@ def main():
     greyscale_buffer = Queue()  # Buffer for grey frames
     video_capture = cv2.VideoCapture("clip.mp4")  # Create VideoCapture obj
 
-    threads = [
+    threads = [  # configure threads to run specific functions
         Thread(
             target=extract_frames, args=[video_capture, maxFrames, color_buffer],
         ),  # Func spec Threads
@@ -33,16 +33,15 @@ def main():
     for t in threads:  # For each thread
         t.start()  # start thread
     for t in threads:  # For each thread
-        t.join()  # join the threads
-
-
-"""
-extract_frames()
-reads the obj, extracts individual frames from input file
-"""
+        t.join()  # join the threads (wait on all threads)
 
 
 def extract_frames(video_capture, maxFrames, color_buffer):
+    """
+    extract_frames()
+    reads the obj, extracts individual frames from input file
+    """
+
     global finished_extracting  # Declaration
 
     count = 1
@@ -57,15 +56,14 @@ def extract_frames(video_capture, maxFrames, color_buffer):
     color_buffer.put(None)  # put None to signify done extracting
 
 
-"""
-convert_frames()
-converts color frames to greyscale frames
-input_buffer = color_buffer
-output_buffer = grayscale_buffer
-"""
-
-
 def convert_frames(input_buffer, output_buffer):
+    """
+    convert_frames()
+    converts color frames to greyscale frames
+    input_buffer = color_buffer
+    output_buffer = grayscale_buffer
+    """
+
     global finished_extracting  # Declaration
     global finished_filtering
 
@@ -86,14 +84,12 @@ def convert_frames(input_buffer, output_buffer):
     output_buffer.put(None)  # put None to signify done filtering
 
 
-"""
-render()
-Display the gray-scale frames
-input_buffer = grayscale buffer
-"""
-
-
 def render(input_buffer):
+    """
+    render()
+    Display the gray-scale frames
+    input_buffer = grayscale buffer
+    """
     global finished_filtering  # Declaration
 
     while not (
